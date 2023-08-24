@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Microsoft.VisualBasic;
+using System.ComponentModel;
 
 Console.WriteLine("Hello, World!");
 
@@ -13,21 +14,36 @@ Console.WriteLine("Hello, World!");
 
 Plant plant1 = new Plant(77, "tree");
 
-var plant2 = plant1.Clone();
+var plant2 = plant1.MyClone();
 
 plant2.Type = "vegetable";
 
-Console.WriteLine(plant1.Type); // tree - ok
-Console.WriteLine(plant2.Type); // vegetable - ok 
+Console.WriteLine(plant1.Type+plant1.Id); // tree77 - ok
+Console.WriteLine(plant2.Type+plant2.Id); // vegetable77 - ok 
 
 
 Tree tree1 = new Tree (33, "tree");
 tree1.Name = "apple";
-var tree2 = tree1.Clone();
+var tree2 = tree1.MyClone();
 tree2.Name = "pine";
 
-Console.WriteLine(tree1.Name); // apple - ok
-Console.WriteLine(tree2.Name); // pine - ok 
+Console.WriteLine(tree1.Name+tree1.Id+tree1.Type); // apple33tree - ok
+Console.WriteLine(tree2.Name + tree2.Id + tree2.Type); // pine33tree - ok 
+
+
+RedApple DarkRedapple = new RedApple(55, "tree", "DarkApple");
+
+DarkRedapple.Color = "VeryRed";
+Console.WriteLine (DarkRedapple.Name + DarkRedapple.Id + DarkRedapple.Type+DarkRedapple.Color); // DarkApple55treeVeryRed - ok
+
+
+var WhiteReadApple = DarkRedapple.MyClone();
+Console.WriteLine(WhiteReadApple.Name + WhiteReadApple.Id + WhiteReadApple.Type + WhiteReadApple.Color); // DarkApple55tree - ok
+
+
+
+// в тестировании мы убеждаемся что клон имеет те же значения свойств что и оригинал и при изменении в клоне свойста, оно не меняется в оригинале
+// И клонируются только те свойства что прописаны в конструкторе класса
 
 
 Console.ReadKey();
@@ -38,7 +54,7 @@ Console.ReadKey();
 
 
 
-// 1-ый уровень, класс Растение, у него есть свойство Идентификатор, и тип. Он также реализует generic интерфейс для клонирования растений 
+// 1-ый уровень, класс Растение, у него есть свойство Идентификатор, и тип. Он также реализует generic интерфейс для клонирования класса растений 
 public class Plant : IMyCloneable<Plant>
 
 {
@@ -53,10 +69,11 @@ public class Plant : IMyCloneable<Plant>
     }
 
 
-    public Plant  Clone ()
+    public Plant  MyClone ()
     {
    
-        return MemberwiseClone() as Plant;
+        Plant plant = new Plant (Id, Type);
+        return plant;
     }
 
 
@@ -65,17 +82,18 @@ public class Plant : IMyCloneable<Plant>
 
 
 // Второй уровень
-// Класс дерево, наследует от родительского класса Растения - Идентификатор и категорию и добавляет тип. И также реализует метод clone для клонирования деревьев
+// Класс дерево, наследует от родительского класса Растения - Идентификатор и категорию и добавляет тип. И также реализует метод myclone для клонирования класса деревьев
 class Tree : Plant
 
 {
     public string Name { get; set; }
     public Tree(int id, string type) : base(id, type) {}
 
-    public Tree Clone()
+    public Tree MyClone()
     {
 
-        return MemberwiseClone() as Tree;
+        Tree tree= new Tree (Id, Type);
+        return tree;
     }
 
 }
@@ -84,61 +102,35 @@ class Tree : Plant
 
 
 
-/*
 
-// Класс куст, наследует от родительского класса Идентификатор и категорию и добавляет тип
-class Bush : Plant
+
+// Класс Крассное Яблоко, наследует от родительского класса Дерево. наследует Идентификатор и Тип, и реализует клонирования себя.
+class RedApple : Tree
 
 {
-    public string Type { get; set; }
-    public Bush(int id, string category, string type) : base(id, category)
+    
+    public string Color { get; set; }
+    public RedApple(int id, string type, string name) : base(id,type)
     {
-        Type = type;
+        Name = name;
     }
 
-}
-
-// Класс корнеплод, наследует от родительского класса Идентификатор и категорию и добавляет тип
-class Root : Plant
-
-{
-    public string Type { get; set; }
-    public Root(int id, string category, string type) : base(id, category)
+    public RedApple MyClone()
     {
-        Type = type;
+
+        RedApple redApple = new RedApple(Id, Type, Name);
+        return redApple;
     }
 
-}
-
-// Третий уровень
-
-// класс яблочное дерево, наследуется от дерева
-
-class Apple : Tree
-
-{
-    public string Name { get; set; }
-    public Apple(int id, string category, string type) : base (id, category, type)  { }
 
 
 }
 
 
-// класс Редис наследуется от корнеплода
-
-class Redis : Root
-
-{
-    public string Name { get; set; }
-    public Redis(int id, string category, string type) : base(id, category, type) { }
-
-}
-
-*/
 
 public interface IMyCloneable<T> where T : class
 {
-    public T Clone();
+    public T MyClone();
 
 
 }
