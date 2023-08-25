@@ -7,9 +7,6 @@ Console.WriteLine("Hello, World!");
 
 
 
-
-
-
 // Тестирование
 
 Plant plant1 = new Plant(77, "tree");
@@ -45,6 +42,14 @@ Console.WriteLine(WhiteReadApple.Name + WhiteReadApple.Id + WhiteReadApple.Type 
 // в тестировании мы убеждаемся что клон имеет те же значения свойств что и оригинал и при изменении в клоне свойста, оно не меняется в оригинале
 // И клонируются только те свойства что прописаны в конструкторе класса
 
+// тест реализации интерфейса IClonable
+
+var TestIClon = (RedApple)DarkRedapple.Clone();
+TestIClon.Name = "Test";
+Console.WriteLine(TestIClon.Name + TestIClon.Id + WhiteReadApple.Type + WhiteReadApple.Color); // Test55tree - ok
+Console.WriteLine(WhiteReadApple.Name + WhiteReadApple.Id + WhiteReadApple.Type + WhiteReadApple.Color); // DarkApple55tree - ok
+
+
 
 Console.ReadKey();
 
@@ -52,7 +57,7 @@ Console.ReadKey();
 
 
 
-
+// Классы и их описание 
 
 // 1-ый уровень, класс Растение, у него есть свойство Идентификатор, и тип. Он также реализует generic интерфейс для клонирования класса растений 
 public class Plant : IMyCloneable<Plant>
@@ -83,7 +88,7 @@ public class Plant : IMyCloneable<Plant>
 
 // Второй уровень
 // Класс дерево, наследует от родительского класса Растения - Идентификатор и категорию и добавляет тип. И также реализует метод myclone для клонирования класса деревьев
-class Tree : Plant
+class Tree : Plant, ICloneable
 
 {
     public string Name { get; set; }
@@ -96,6 +101,7 @@ class Tree : Plant
         return tree;
     }
 
+    public object Clone() { return this.MyClone(); }
 }
 
 
@@ -104,8 +110,8 @@ class Tree : Plant
 
 
 
-// Класс Крассное Яблоко, наследует от родительского класса Дерево. наследует Идентификатор и Тип, и реализует клонирования себя.
-class RedApple : Tree
+// 3-й Уровень, Класс Крассное Яблоко, наследует от родительского класса Дерево. наследует Идентификатор и Тип, и реализует клонирования себя.
+class RedApple : Tree, ICloneable
 
 {
     
@@ -122,7 +128,7 @@ class RedApple : Tree
         return redApple;
     }
 
-
+    public object Clone() {return this.MyClone(); }
 
 }
 
