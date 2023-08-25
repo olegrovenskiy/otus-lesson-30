@@ -23,4 +23,4 @@ ICloneable
 1. Работает с типом object
 2. Микрософт не рекомендует использовать, так как нет чёткости какое будет клонирование - глубокое или поверхностное
 3. Вотт ссылка на статью
-   https://learn.microsoft.com/ru-ru/archive/blogs/brada/should-we-obsolete-icloneable-the-slar-on-system-icloneable
+    https://learn.microsoft.com/ru-ru/archive/blogs/brada/should-we-obsolete-icloneable-the-slar-on-system-icloneable
